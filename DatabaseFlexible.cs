@@ -120,6 +120,53 @@ namespace DatabaseFlex
             parentTable.Rows.Add(3, false, true, true);
             parentTable.Rows.Add(4, false, false, false);
 
+            // get column
+            var columnNames = parentTable.Columns.Cast<DataColumn>()
+                                   .Select(column => column.ColumnName).ToArray();
+            // get all row
+            var rows = (from row in parentTable.AsEnumerable()
+                        select row).ToArray();
+            // get all by id
+            var rowIds = (from row in parentTable.AsEnumerable()
+                          select row["Id"]).ToArray();
+
+            // condition
+            var rowConditions = (from row in parentTable.AsEnumerable()
+                                 where int.Parse(row.Field<string>("Id")) <= 2
+                                 select row).ToArray();
+
+            var query = from parent in parentTable.AsEnumerable()
+                        join child in childTable.AsEnumerable()
+                        on parent.Field<int>("Id") equals child.Field<int>("Id")
+                        select new
+                        {
+                            ParentId = parent.Field<int>("Id"),
+                            ParentName = parent.Field<string>("ParentName"),
+                            ChildId = child.Field<int>("ChildId"),
+                            ChildName = child.Field<string>("ChildName")
+                        };
+
+            var groupedData = (from row in parentTable.AsEnumerable()
+                               group row by row.Field<bool>("A") into A
+                               select new
+                               {
+                                   Age = A.Key,
+                                   Row = A
+                               }).ToArray();
+            var rowGroupIds = from row in groupedData[1].Row
+                              select row.Field<string>("Id");
+
+            var selectedColumns = from row in parentTable.AsEnumerable()
+                                  select new
+                                  {
+                                      Name = row.Field<string>("Name"),
+                                      Age = row.Field<int>("Age")
+                                  };
+
+            var sortedRows = from row in parentTable.AsEnumerable()
+                             orderby row.Field<string>("Name")
+                             select row;
+
 
             // 2. Tạo bảng con (ChildTable)
             DataTable childTable = new DataTable("KetQua");
