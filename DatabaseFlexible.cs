@@ -3,7 +3,29 @@ using System.Dynamic;
 
 namespace DatabaseFlex
 {
+    public static class Extention
+    {
+        public static dynamic FirstOrDefault(this DataTable dataTable, Func<DataRow, bool>? callback)
+        {
+            var rowConditions = (from row in dataTable.AsEnumerable()
+                                 where callback?.Invoke(row) ?? true
+                                 select row).FirstOrDefault();
 
+            return rowConditions;
+        }
+
+        public static dynamic GetValue(this DataRow row, string columnName)
+        {
+            if (row.Table.Columns.Contains(columnName))
+            {
+                return row[columnName];
+            }
+            else
+            {
+                throw new ArgumentException($"Column '{columnName}' does not exist in the DataTable.");
+            }
+        }
+    }
     internal class Program
     {
         static void Main(string[] args)
@@ -198,6 +220,8 @@ namespace DatabaseFlex
 
             Console.WriteLine("Hello, World!");
         }
+
+
 
         static void PrintTablesWithRelation(DataSet dataSet)
         {
