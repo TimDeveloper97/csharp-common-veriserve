@@ -1,8 +1,59 @@
 ﻿using System.Data;
 using System.Dynamic;
+using System.Reflection;
 
 namespace DatabaseFlex
 {
+    public class Extention2
+    {
+        public static dynamic FirstOrDefault2(DataTable dataTable, Func<DataRow, bool>? callback)
+        {
+            var rowConditions = (from row in dataTable.AsEnumerable()
+                                 where callback?.Invoke(row) ?? true
+                                 select row).FirstOrDefault();
+
+            return rowConditions;
+        }
+
+        public static dynamic GetValue2(DataRow row, string columnName)
+        {
+            if (row.Table.Columns.Contains(columnName))
+            {
+
+                return row[columnName];
+            }
+            else
+            {
+                throw new ArgumentException($"Column '{columnName}' does not exist in the DataTable.");
+            }
+        }
+    }
+
+    public class Extention1
+    {
+        public static dynamic FirstOrDefault1(DataTable dataTable, Func<DataRow, bool>? callback)
+        {
+            var rowConditions = (from row in dataTable.AsEnumerable()
+                                 where callback?.Invoke(row) ?? true
+                                 select row).FirstOrDefault();
+
+            return rowConditions;
+        }
+
+        public static dynamic GetValue1(DataRow row, string columnName)
+        {
+            if (row.Table.Columns.Contains(columnName))
+            {
+
+                return row[columnName];
+            }
+            else
+            {
+                throw new ArgumentException($"Column '{columnName}' does not exist in the DataTable.");
+            }
+        }
+    }
+
     public static class Extention
     {
         public static dynamic FirstOrDefault(this DataTable dataTable, Func<DataRow, bool>? callback)
@@ -18,6 +69,7 @@ namespace DatabaseFlex
         {
             if (row.Table.Columns.Contains(columnName))
             {
+
                 return row[columnName];
             }
             else
@@ -26,10 +78,64 @@ namespace DatabaseFlex
             }
         }
     }
+
     internal class Program
     {
+        public static List<Type> GetTypesFromParams(params dynamic[] parameters)
+        {
+            List<Type> types = new List<Type>();
+
+            foreach (var param in parameters)
+            {
+                // Lấy kiểu thực của mỗi tham số và thêm vào danh sách
+                types.Add(param?.GetType());
+            }
+
+            return types;
+        }
+
         static void Main(string[] args)
         {
+            string methodName = "GetValue1";
+            List<Type> parameterTypesToMatch = GetTypesFromParams(1, "Hello", 3.14, true);
+
+            var a = new Extention1();
+            var b = new Extention2();
+
+            var l = new List<dynamic>();
+            l.Add(a);
+            l.Add(b);
+
+            foreach (var i in l)
+            {
+                var type = i.GetType();
+                MethodInfo[] methods = type.GetMethods(BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.DeclaredOnly
+                    | BindingFlags.Static);
+
+                foreach (MethodInfo method in methods)
+                {
+                    if (method.Name == methodName)
+                    {
+                        Console.WriteLine($"Phương thức khớp Name: {method.Name}");
+                    }
+
+                    ParameterInfo[] parameters = method.GetParameters();
+
+                    // Lấy danh sách các kiểu tham số của phương thức hiện tại
+                    List<Type> methodParameterTypes = parameters.Select(p => p.ParameterType).ToList();
+
+                    // Kiểm tra xem danh sách tham số của phương thức có khớp với danh sách cần tìm hay không
+                    if (methodParameterTypes.SequenceEqual(parameterTypesToMatch))
+                    {
+                        Console.WriteLine($"Phương thức khớp Parameter: {method.Name}");
+                    }
+                }
+            }
+
+            Console.WriteLine("Done");
+
             //dynamic myClass1 = new ExpandoObject();
             //var lShop = new List<string>
             //{
@@ -142,6 +248,7 @@ namespace DatabaseFlex
             parentTable.Rows.Add(3, false, true, true);
             parentTable.Rows.Add(4, false, false, false);
 
+
             // get column
             var columnNames = parentTable.Columns.Cast<DataColumn>()
                                    .Select(column => column.ColumnName).ToArray();
@@ -157,16 +264,18 @@ namespace DatabaseFlex
                                  where int.Parse(row.Field<string>("Id")) <= 2
                                  select row).ToArray();
 
-            var query = from parent in parentTable.AsEnumerable()
-                        join child in childTable.AsEnumerable()
-                        on parent.Field<int>("Id") equals child.Field<int>("Id")
-                        select new
-                        {
-                            ParentId = parent.Field<int>("Id"),
-                            ParentName = parent.Field<string>("ParentName"),
-                            ChildId = child.Field<int>("ChildId"),
-                            ChildName = child.Field<string>("ChildName")
-                        };
+            var rowCondition1s = parentTable.FirstOrDefault(x => int.Parse(x.GetValue("Id")) <= 2);
+
+            //var query = from parent in parentTable.AsEnumerable()
+            //            join child in childTable.AsEnumerable()
+            //            on parent.Field<int>("Id") equals child.Field<int>("Id")
+            //            select new
+            //            {
+            //                ParentId = parent.Field<int>("Id"),
+            //                ParentName = parent.Field<string>("ParentName"),
+            //                ChildId = child.Field<int>("ChildId"),
+            //                ChildName = child.Field<string>("ChildName")
+            //            };
 
             var groupedData = (from row in parentTable.AsEnumerable()
                                group row by row.Field<bool>("A") into A
@@ -189,33 +298,32 @@ namespace DatabaseFlex
                              orderby row.Field<string>("Name")
                              select row;
 
-
             // 2. Tạo bảng con (ChildTable)
-            DataTable childTable = new DataTable("KetQua");
-            childTable.Columns.Add("Id", typeof(string));
-            childTable.Columns.Add("Book1", typeof(bool));
-            childTable.Columns.Add("Book2", typeof(bool));
-            childTable.Columns.Add("Book3", typeof(bool));
+            //DataTable childTable = new DataTable("KetQua");
+            //childTable.Columns.Add("Id", typeof(string));
+            //childTable.Columns.Add("Book1", typeof(bool));
+            //childTable.Columns.Add("Book2", typeof(bool));
+            //childTable.Columns.Add("Book3", typeof(bool));
 
-            // Thêm dữ liệu vào bảng con
-            childTable.Rows.Add(1, true, true, true);
-            childTable.Rows.Add(2, false, false, true);
-            childTable.Rows.Add(3, false, true, false);
-            childTable.Rows.Add(4, true, true, true);
+            //// Thêm dữ liệu vào bảng con
+            //childTable.Rows.Add(1, true, true, true);
+            //childTable.Rows.Add(2, false, false, true);
+            //childTable.Rows.Add(3, false, true, false);
+            //childTable.Rows.Add(4, true, true, true);
 
-            // 3. Tạo DataSet để chứa các bảng
-            DataSet dataSet = new DataSet();
-            dataSet.Tables.Add(parentTable);
-            dataSet.Tables.Add(childTable);
+            //// 3. Tạo DataSet để chứa các bảng
+            //DataSet dataSet = new DataSet();
+            //dataSet.Tables.Add(parentTable);
+            //dataSet.Tables.Add(childTable);
 
-            // 4. Thiết lập quan hệ khóa ngoại giữa ParentTable và ChildTable
-            DataColumn parentColumn = parentTable.Columns["Id"];
-            DataColumn childColumn = childTable.Columns["Id"];
-            DataRelation relation = new DataRelation("ParentChildRelation", parentColumn, childColumn);
-            dataSet.Relations.Add(relation);
+            //// 4. Thiết lập quan hệ khóa ngoại giữa ParentTable và ChildTable
+            //DataColumn parentColumn = parentTable.Columns["Id"];
+            //DataColumn childColumn = childTable.Columns["Id"];
+            //DataRelation relation = new DataRelation("ParentChildRelation", parentColumn, childColumn);
+            //dataSet.Relations.Add(relation);
 
-            // 5. In dữ liệu từ cả hai bảng với quan hệ
-            PrintTablesWithRelation(dataSet);
+            //// 5. In dữ liệu từ cả hai bảng với quan hệ
+            //PrintTablesWithRelation(dataSet);
 
 
             Console.WriteLine("Hello, World!");
