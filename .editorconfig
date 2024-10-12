@@ -13,6 +13,7 @@ charset = utf-8
 insert_final_newline = true
 # Xóa các khoảng trắng thừa ở cuối dòng
 trim_trailing_whitespace = true
+dotnet_style_prefer_conditional_expression_over_assignment=true:error
 
 # Quy định riêng cho tệp Markdown
 [*.md]
@@ -25,6 +26,9 @@ trim_trailing_whitespace = false
 indent_size = 2
 
 [*.cs]
+# Xóa khoảng trắng thừa
+trim_trailing_whitespace = true
+
 # Đặt dấu chấm phẩy ở cuối dòng
 csharp_style_require_trailing_commas = true:suggestion
 
@@ -43,7 +47,7 @@ csharp_style_prefer_is_not_expression = true:suggestion
 # Quy ước đặt tên
 dotnet_naming_rule.private_members_should_be_camel_case.severity = error
 dotnet_naming_rule.private_members_should_be_camel_case.symbols = private_members
-dotnet_naming_rule.private_members_should_be_camel_case.style = camel_case
+# dotnet_naming_rule.private_members_should_be_camel_case.style = camel_case
 
 dotnet_naming_symbols.private_members.applicable_kinds = field
 dotnet_naming_symbols.private_members.applicable_accessibilities = private
@@ -69,5 +73,14 @@ csharp_prefer_braces = true:error
 dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:error
 
 # Các quy ước khác
-csharp_new_line_before_open_brace = all:error
+csharp_new_line_before_open_brace =all
 csharp_style_expression_bodied_methods = true:warning
+
+# Đặt quy tắc về số lượng dòng trắng
+csharp_style_allow_blank_lines_between_consecutive_braces = true:error
+csharp_space_before_open_square_brackets=true
+
+# Newline
+csharp_space_after_keywords_in_control_flow_statements=true
+csharp_space_after_cast=true
+
