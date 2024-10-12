@@ -1,0 +1,73 @@
+# Tệp này áp dụng cho tất cả các tệp trong dự án.
+root = true
+
+# Quy định các quy tắc chung cho tất cả các tệp
+[*]
+# Sử dụng dấu cách thay vì tab
+indent_style = space
+# Số lượng dấu cách cho mỗi mức thụt lề
+indent_size = 4
+# Sử dụng UTF-8 làm mã hóa mặc định
+charset = utf-8
+# Thêm ký tự newline ở cuối tệp
+insert_final_newline = true
+# Xóa các khoảng trắng thừa ở cuối dòng
+trim_trailing_whitespace = true
+
+# Quy định riêng cho tệp Markdown
+[*.md]
+# Không xóa khoảng trắng ở cuối dòng
+trim_trailing_whitespace = false
+
+# Quy định riêng cho tệp JSON
+[*.json]
+# Sử dụng 2 dấu cách cho JSON
+indent_size = 2
+
+[*.cs]
+# Đặt dấu chấm phẩy ở cuối dòng
+csharp_style_require_trailing_commas = true:suggestion
+
+# Sử dụng kiểu Pascal cho tên lớp
+dotnet_naming_rule.class_names.symbols = class
+dotnet_naming_rule.class_names.style = pascal_case
+
+# Sử dụng kiểu camel cho biến private
+dotnet_naming_rule.private_field_names.symbols = field
+dotnet_naming_rule.private_field_names.style = camel_case
+dotnet_naming_rule.private_field_names.required_modifiers = private
+
+# Sử dụng từ khóa 'is not' thay vì phủ định 'is'
+csharp_style_prefer_is_not_expression = true:suggestion
+
+# Quy ước đặt tên
+dotnet_naming_rule.private_members_should_be_camel_case.severity = error
+dotnet_naming_rule.private_members_should_be_camel_case.symbols = private_members
+dotnet_naming_rule.private_members_should_be_camel_case.style = camel_case
+
+dotnet_naming_symbols.private_members.applicable_kinds = field
+dotnet_naming_symbols.private_members.applicable_accessibilities = private
+dotnet_naming_symbols.private_members.required_modifiers = readonly
+
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+# Quy tắc sử dụng từ khóa `this`
+dotnet_style_qualification_for_field = true:suggestion
+dotnet_style_qualification_for_property = true:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+
+# Quy tắc `var`
+dotnet_style_var_for_built_in_types = true:suggestion
+dotnet_style_var_when_type_is_apparent = true:suggestion
+dotnet_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+
+# Phải có khối { } trong câu lệnh điều kiện
+csharp_prefer_braces = true:error
+
+# Sử dụng dấu ngoặc đơn trong các phép tính toán
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:error
+
+# Các quy ước khác
+csharp_new_line_before_open_brace = all:error
+csharp_style_expression_bodied_methods = true:warning
