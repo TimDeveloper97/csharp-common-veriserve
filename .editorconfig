@@ -1,3 +1,5 @@
+# StyleCop.Analyzers
+# <NoWarn>CS0168;CS0219;SA1500;SA1309;SA1203;SA1310;SA1208</NoWarn>
 # Tệp này áp dụng cho tất cả các tệp trong dự án.
 root = true
 
@@ -49,6 +51,8 @@ dotnet_naming_rule.private_members_should_be_camel_case.severity = error
 dotnet_naming_rule.private_members_should_be_camel_case.symbols = private_members
 # dotnet_naming_rule.private_members_should_be_camel_case.style = camel_case
 
+dotnet_naming_style.consts_all_uppercase.capitalization = upper_case
+
 dotnet_naming_symbols.private_members.applicable_kinds = field
 dotnet_naming_symbols.private_members.applicable_accessibilities = private
 dotnet_naming_symbols.private_members.required_modifiers = readonly
@@ -78,9 +82,11 @@ csharp_style_expression_bodied_methods = true:warning
 
 # Đặt quy tắc về số lượng dòng trắng
 csharp_style_allow_blank_lines_between_consecutive_braces = true:error
-csharp_space_before_open_square_brackets=true
+csharp_space_before_open_square_brackets=false
 
 # Newline
 csharp_space_after_keywords_in_control_flow_statements=true
-csharp_space_after_cast=true
+csharp_space_after_cast=false
 
+# Method
+dotnet_diagnostic.SA1600.severity = error
