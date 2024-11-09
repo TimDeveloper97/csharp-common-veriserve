@@ -2,6 +2,17 @@
 :: Tên file batch: build-release.bat
 :: Mô tả: Build dự án .NET MAUI ở chế độ Release
 
+:: Thực hiện lệnh git pull
+git pull
+
+:: Kiểm tra kết quả của lệnh git pull
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo Git pull failed! Please check the errors above.
+    pause
+    exit /b %ERRORLEVEL%
+)
+
 :: Điều hướng đến thư mục chứa file .csproj
 set PROJECT_PATH=O:\Git\MauiApp3\MauiApp3\
 
