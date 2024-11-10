@@ -1,0 +1,125 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!--<TargetFrameworks>net8.0-maccatalyst</TargetFrameworks>-->
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<OutputType>Exe</OutputType>
+		<RootNamespace>MauiApp3</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Display name -->
+		<ApplicationTitle>MauiApp3</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.mauiapp3</ApplicationId>
+		<ApplicationIdGuid>e45cf0eb-4c81-44eb-8023-e4bf90f090ea</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>4.0</ApplicationDisplayVersion>
+		<ApplicationVersion>3</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<Configurations>Debug;Release;Vendor</Configurations>
+		
+		<AssemblyVersion>4.0.4.3</AssemblyVersion>
+		<FileVersion>4.0.4.3</FileVersion>
+		<Copyright>TimDeveloper</Copyright>
+		<Description>Hello world</Description>
+		<NeutralLanguage>ja</NeutralLanguage>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DocumentationFile>O:\Git\MauiApp3\note.txt</DocumentationFile>
+		<Authors>TimDeveloper</Authors>
+		<Company>Veriserve</Company>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<PublishAot>False</PublishAot>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<DefineConstants>DEBUG</DefineConstants>
+		<Optimize>false</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<MauiImageOptimization>false</MauiImageOptimization>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+		<DefineConstants>RELEASE</DefineConstants>
+		<MauiImageOptimization>true</MauiImageOptimization>
+		<WindowsPackageType>None</WindowsPackageType>
+
+		<Deterministic>true</Deterministic>
+		<DebugSymbols>false</DebugSymbols>
+		<LinkerTrim>true</LinkerTrim>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>full</TrimMode>
+		<XamlC>true</XamlC>
+
+		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+		<PublishSingleFile>true</PublishSingleFile>
+		<EnableReadyToRun>true</EnableReadyToRun>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Vendor'">
+	  <Optimize>true</Optimize>
+	  <DebugType>pdbonly</DebugType>
+	  <DebugSymbols>false</DebugSymbols>
+	  <DefineConstants>VENDOR</DefineConstants>
+	  <MauiImageOptimization>true</MauiImageOptimization>
+	  <WindowsPackageType>None</WindowsPackageType>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<!-- App Icon -->
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+		<!-- Images -->
+		<MauiAsset Include="Resources\Images\**" />
+		
+		<!--<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />-->
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\**" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Raw\dog1.jpg" />
+	  <None Remove="Resources\Raw\image.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiImage Include="Resources\Images\image.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiImage>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\readme.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+	</ItemGroup>
+
+
+</Project>

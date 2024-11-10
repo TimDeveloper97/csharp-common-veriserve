@@ -3,15 +3,15 @@
 :: Mô tả: Build dự án .NET MAUI ở chế độ Release
 
 :: Thực hiện lệnh git pull
-git pull
+REM git pull
 
 :: Kiểm tra kết quả của lệnh git pull
-if %ERRORLEVEL% NEQ 0 (
-    echo.
-    echo Git pull failed! Please check the errors above.
-    pause
-    exit /b %ERRORLEVEL%
-)
+REM if %ERRORLEVEL% NEQ 0 (
+    REM echo.
+    REM echo Git pull failed! Please check the errors above.
+    REM pause
+    REM exit /b %ERRORLEVEL%
+REM )
 
 :: Điều hướng đến thư mục chứa file .csproj
 set PROJECT_PATH=O:\Git\MauiApp3\MauiApp3\
@@ -44,7 +44,7 @@ powershell -Command "(Get-Content '%CSPROJ_FILE%') -replace '<AssemblyVersion>.*
 dotnet clean
 
 :: Build Release
-dotnet build -c Release
+dotnet build -c Release -p:IncludeAllContentForSelfExtract=true
 
 :: Kiểm tra kết quả build
 if %ERRORLEVEL% NEQ 0 (
@@ -54,6 +54,8 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b %ERRORLEVEL%
 )
 
+
+cd ..
 echo.
 echo Build succeeded!
 pause
