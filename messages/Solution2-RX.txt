@@ -1,0 +1,131 @@
+Để xây dựng một hệ thống gửi và nhận dữ liệu giữa các `ViewModel` trong ứng dụng MAUI sử dụng **Reactive Extensions (Rx)** và **Token** để quản lý việc truyền tải dữ liệu, bạn có thể làm theo cách sau.
+
+**Cách tiếp cận sử dụng Signal System với Reactive Extensions (Rx):**
+
+1. **Định nghĩa `Subject` để phát và nhận sự kiện:**
+   - Sử dụng `Subject` từ **Reactive Extensions** để phát các sự kiện và cho phép nhiều `ViewModel` lắng nghe (subscribe) sự kiện đó.
+   - Một `Subject` có thể hoạt động như một "kênh" mà các `ViewModel` sẽ gửi và nhận thông qua đó.
+
+2. **Gửi và nhận dữ liệu với Token:**
+   - Token sẽ là một giá trị duy nhất hoặc ID giúp phân biệt các sự kiện khác nhau. Điều này giúp bạn chỉ nhận sự kiện từ các `ViewModel` có liên quan.
+
+### Các bước thực hiện
+
+1. **Cài đặt Reactive Extensions (Rx) trong dự án MAUI:**
+   Bạn cần thêm thư viện **Rx.NET** vào dự án của mình:
+   ```bash
+   dotnet add package System.Reactive
+   ```
+
+2. **Xây dựng Signal System với Token:**
+
+   **Tạo `SignalService` để phát và nhận sự kiện:**
+   ```csharp
+   using System;
+   using System.Reactive.Subjects;
+   using System.Reactive.Linq;
+
+   public class SignalService
+   {
+       private readonly ISubject<(string Token, object Data)> _signalSubject;
+
+       public SignalService()
+       {
+           _signalSubject = new Subject<(string Token, object Data)>();
+       }
+
+       // Phát dữ liệu với Token
+       public void SendSignal(string token, object data)
+       {
+           _signalSubject.OnNext((token, data));
+       }
+
+       // Nhận dữ liệu với Token
+       public IObservable<object> ReceiveSignal(string token)
+       {
+           return _signalSubject
+               .Where(signal => signal.Token == token)  // Lọc theo Token
+               .Select(signal => signal.Data);          // Lấy dữ liệu
+       }
+   }
+   ```
+
+   - Trong lớp `SignalService`, `SendSignal` sẽ phát một sự kiện với một `Token` và dữ liệu kèm theo.
+   - `ReceiveSignal` sẽ nhận dữ liệu từ `SignalService` dựa trên `Token` đã cung cấp.
+
+3. **Cấu hình trong `MauiProgram.cs`:**
+   Để có thể truy cập `SignalService` từ bất kỳ đâu trong ứng dụng, bạn sẽ cần đăng ký dịch vụ này trong `MauiProgram.cs`:
+   ```csharp
+   builder.Services.AddSingleton<SignalService>();
+   ```
+
+4. **Truyền và nhận dữ liệu từ ViewModel:**
+
+   Giả sử bạn có hai `ViewModel` cần gửi và nhận thông tin qua `SignalService`.
+
+   **ViewModel A (Gửi dữ liệu):**
+   ```csharp
+   public class ViewModelA
+   {
+       private readonly SignalService _signalService;
+
+       public ViewModelA(SignalService signalService)
+       {
+           _signalService = signalService;
+       }
+
+       public void SendMessage()
+       {
+           var data = "Data from ViewModel A";
+           string token = "ViewModelA-Token";
+           _signalService.SendSignal(token, data);  // Gửi tín hiệu với token
+       }
+   }
+   ```
+
+   **ViewModel B (Nhận dữ liệu):**
+   ```csharp
+   public class ViewModelB
+   {
+       private readonly SignalService _signalService;
+
+       public ViewModelB(SignalService signalService)
+       {
+           _signalService = signalService;
+       }
+
+       public void ListenForMessages()
+       {
+           string token = "ViewModelA-Token";
+           _signalService.ReceiveSignal(token)
+               .Subscribe(data =>
+               {
+                   // Xử lý dữ liệu nhận được từ ViewModel A
+                   Console.WriteLine($"Received data in ViewModel B: {data}");
+               });
+       }
+   }
+   ```
+
+5. **Cách sử dụng trong ứng dụng:**
+   Bây giờ bạn có thể gửi và nhận dữ liệu giữa các `ViewModel` như sau:
+
+   - **Gửi dữ liệu từ `ViewModelA`:**
+     ```csharp
+     var viewModelA = new ViewModelA(signalService);
+     viewModelA.SendMessage();
+     ```
+
+   - **Nhận dữ liệu trong `ViewModelB`:**
+     ```csharp
+     var viewModelB = new ViewModelB(signalService);
+     viewModelB.ListenForMessages();
+     ```
+
+### Lợi ích của cách làm này:
+- **Tách biệt các `ViewModel`:** `SignalService` sẽ giúp các `ViewModel` không cần phải phụ thuộc vào nhau. Mỗi `ViewModel` chỉ cần biết về `Token` và có thể gửi/nhận dữ liệu một cách độc lập.
+- **Dễ dàng mở rộng:** Bạn có thể mở rộng hệ thống để cho phép nhiều `ViewModel` gửi và nhận dữ liệu từ các `Token` khác nhau.
+- **Khả năng kết hợp với Reactive Extensions:** Sử dụng các phương thức như `Where`, `Select`, `Subscribe` giúp bạn dễ dàng xử lý luồng dữ liệu một cách mạnh mẽ và linh hoạt.
+
+### Tóm lại:
+Sử dụng Reactive Extensions (Rx) kết hợp với `Token` là một cách mạnh mẽ và linh hoạt để quản lý việc gửi và nhận dữ liệu giữa các `ViewModel`. Cách tiếp cận này giúp bạn tạo ra một hệ thống sạch sẽ và không phụ thuộc vào nhau giữa các thành phần trong ứng dụng.
