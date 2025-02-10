@@ -3,3 +3,45 @@ HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\La
 
 ~ DPIUNAWARE
 HIGHDPIAWARE
+
+===========
+private void UpdateDPI()
+{
+    try
+    {
+        // Path to the registry key for the application
+        string appName = "O:\\Git\\MauiApp3\\MauiApp4\\bin\\Debug\\net7.0-windows10.0.19041.0\\win10-x64\\MauiApp4.exe"; // Replace with your application's executable name
+        string registryPath = $@"Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers";
+
+        // Open the registry key
+        using (RegistryKey key = Registry.CurrentUser.OpenSubKey(registryPath, true))
+        {
+            if (key == null)
+            {
+                Console.WriteLine("Registry key not found.");
+                return;
+            }
+
+            // Set the DPI scaling override value
+            // Possible values:
+            // "~ HIGHDPIAWARE" - Application is DPI-aware
+            // "~ DPIUNAWARE" - Application is not DPI-aware
+            // "~ GDIDPISCALING DPIUNAWARE" - Application is not DPI-aware, use GDI scaling
+            // "~ GDIDPISCALING DPIUNAWARE" - Application is not DPI-aware, use GDI scaling
+            string dpiScalingValue = "~ HIGHDPIAWARE"; // Set the desired DPI scaling override
+
+            key.SetValue(appName, dpiScalingValue, RegistryValueKind.String);
+
+            Console.WriteLine($"High DPI scaling override has been set for {appName}." +
+                $"A system restart may be required for changes to take effect.");
+        }
+    }
+    catch (UnauthorizedAccessException)
+    {
+        Console.WriteLine("Access denied. Please run the application with administrative privileges.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred: {ex.Message}");
+    }
+}
