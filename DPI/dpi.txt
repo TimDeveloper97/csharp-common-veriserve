@@ -1,0 +1,5 @@
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers
+HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers
+
+~ DPIUNAWARE
+HIGHDPIAWARE
