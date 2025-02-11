@@ -1,0 +1,22 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem]
+"LongPathsEnabled"=dword:00000001
+
+=====================
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <longPathAware>true</longPathAware>
+    </windowsSettings>
+  </application>
+
+=====================
+ "profiles": {
+   "Windows Machine": {
+     "commandName": "Project",
+     "nativeDebugging": false
+   }
+ }
+		<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+		<SelfContained>true</SelfContained>
+		<WindowsPackageType>None</WindowsPackageType>
