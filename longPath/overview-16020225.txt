@@ -1,0 +1,36 @@
+1. Mục tiêu
+- tự đọc data tĩnh ở 1 file
+- hiển thị show data lên giao diện
+
+Project, Introduce about your self, Contact
+
+2, Platform
+React vs .NET core 
+
+3, Base
+- Asserts
+- Constants
+- Menu
+ + Home
+ + Projects
+ + Services
+src.js
+index.html
+- Services
+
+4, Tasks
+
+- Menu: 
+ + Projects: 
+	- Tên
+	- Thông tin về project
+	- Giới thiệu tổng quan
+	- Video 
+	- Ảnh
+ + Services:
+ 	+ Tư vấn
+	+ An toàn
+	+ Bảo mật
+	+ Đúng hạn
+	+ Giá tiền (giá tiền)
+ + Home: 
